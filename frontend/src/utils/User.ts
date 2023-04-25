@@ -1,27 +1,40 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 import { IUser } from "../../../shared/IUser";
 import {api} from '../components/apiUrl';
 
   export function useAuthUser(disableNavigate:boolean = false) : IUser | undefined {
     const [userState, setUser] = useState<IUser | undefined>(undefined);
     const navigate = useNavigate();
-
-    useEffect(() => {
-      async function getUserDetails() {
-        const user = await getAuthenticatedUser();
-        setUser(user || undefined);
-        if (!user) {
-          if (!disableNavigate) {
-            navigate("/login");
-          }
-          return userState;
-        }
+    const user = useSelector((state: RootState) => state.auth.user)
+    
+    if (!user) {
+      if (!disableNavigate) {
+        //navigate("/login");
+        console.log("NAV /login");
       }
-      getUserDetails();
-    }, []);
+      return undefined;
+    }
 
-    return userState;
+    return user ? user : undefined;
+
+    
+    //   async function getUserDetails() {
+    //     const user = await getAuthenticatedUser();
+    //     setUser(user || undefined);
+    //     if (!user) {
+    //       if (!disableNavigate) {
+    //         navigate("/login");
+    //       }
+    //       return userState;
+    //     }
+    //   }
+    //   getUserDetails();
+    // }, []);
+
+    // return userState;
   }
 
   export function useAdminUser() {
@@ -41,7 +54,7 @@ import {api} from '../components/apiUrl';
   }
 
   export function getTokenFromLocalStorage() {
-    return localStorage.getItem('token') || "";
+    return localStorage.getItem('token') || null;
   }
 
   function removeTokenInLocalStorage() {

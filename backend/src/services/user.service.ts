@@ -63,7 +63,7 @@ export class UserService{
     };
   }
 
-  async loginUser(userCredentials: IUserCredentials): Promise<{token: string, userId?: number}> {
+  async loginUser(userCredentials: IUserCredentials): Promise<{token: string, user?: IUser}> {
     // // @ts-ignore
     const jwt = require('jsonwebtoken');
 
@@ -85,7 +85,14 @@ export class UserService{
       {expiresIn: process.env.JWT_EXPIRES_IN}
     );
 
-    return {token, userId: modelUser.id};
+    const user:IUser = {
+      id: modelUser.id,
+      firstName: modelUser.firstName,
+      lastName: modelUser.lastName,
+      isAdmin: modelUser.userName === "admin",
+    }
+
+    return {token, user};
   }
 
   async updateUser(id: number, user: User): Promise<User> {

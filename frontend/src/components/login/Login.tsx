@@ -6,10 +6,16 @@ import ValidationError from '../../utils/ValidationError';
 import { IUserCredentials } from '../../../../shared/IUser';
 import {api} from '../apiUrl';
 import { storeTokenInLocalStorage } from '../../utils/User';
+import { userLogin } from '../../redux/authActions';
+import { useDispatch } from 'react-redux';
+import { AnyAction } from 'redux';
+import { ThunkDispatch } from '@reduxjs/toolkit';
+import reducers from '../../redux/authSlice';
 
 const Login = () => {
     const navigate = useNavigate();
     const [errorsObj, setErrorsObj] = useState<IRegisterErrors>({hasErrors: false});
+    const dispatch = useDispatch<ThunkDispatch<ReturnType<typeof reducers>, any, AnyAction>>();
 
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
@@ -40,12 +46,7 @@ const Login = () => {
                 userName,
                 password
             };
-            const response = await api.post('/login', userCredentials);
-            if (response?.data?.error) {
-                throw new ValidationError(response?.data?.error);
-            }
-
-            storeTokenInLocalStorage(response?.data?.token, response?.data?.userId);
+            await dispatch(userLogin(userCredentials));
             navigate("/");
         }catch(err){
             if(err instanceof ValidationError){
