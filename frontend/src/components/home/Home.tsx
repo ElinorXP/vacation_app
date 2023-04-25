@@ -8,6 +8,7 @@ import CardHeader from '@mui/material/CardHeader';
 import IconButton from '@mui/material/IconButton';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button/Button';
 //import FavoriteIcon from '@mui/icons-material/Favorite';
 //import MoreVertIcon from '@mui/icons-material/MoreVert';
 
@@ -25,12 +26,13 @@ import VacationAPI from '../../utils/api';
 const Home = () => {
     const [data, setData] = useState<IVacationsData>();
     const [currentPage, setCurrentPage] = useState<number>(0);
+    const [followedMode, setFollowedMode] = useState<boolean>(false);
 
     const user = useAuthUser();
 
     const showVacations = async () => {
         try{
-            const response = await api.get(`/vacations?page=${currentPage}`);
+            const response = await api.get(`/vacations?followedMode=${followedMode}&page=${currentPage}`);
             setData(response.data);
         }catch(err){
             console.log(err);
@@ -39,7 +41,7 @@ const Home = () => {
 
     useEffect(() => {
         showVacations();
-    }, [currentPage]);
+    }, [currentPage, followedMode]);
 
     const handleChangePage = (
         event: React.MouseEvent<HTMLButtonElement> | null,
@@ -52,6 +54,7 @@ const Home = () => {
         enum eState {
             FOLLOWING = 'error',
             NOT_FOLLOWING = 'info',
+            // error/info = colors of mui
         }
         const [followState, setFollowState] = useState<eState>(vacation.isUserFollowing! ? eState.FOLLOWING : eState.NOT_FOLLOWING);
         const [followersCount, setFollowersCount] = useState<number>(vacation.followers!);
@@ -85,24 +88,33 @@ const Home = () => {
             }}
             color={followState}>♥
         </IconButton>}
-        <p>{followersCount}</p>
+        <p>{followersCount} Followers</p>
         </>);
+    }
+
+    const FollowingFilter = () => {
+        return(<Button variant="outlined" onClick={() => {
+            setFollowedMode(!followedMode);
+        }}>{followedMode ? "Show All" : "Favorites"}</Button>);
     }
 
     return(
         <div className="add-vacation mx-auto border w-50 container">
             <h1 className="text-center">Home</h1>
 
+            <FollowingFilter />
+
             <TablePagination
                 component="div"
                 count={data?.totalCount || 0}
                 page={currentPage}
                 onPageChange={handleChangePage}
-                rowsPerPage={3}
+                rowsPerPage={4}
                 onRowsPerPageChange={() => {}}
             />
 
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                {data?.vacations.length === 0 && "No Followed Vacations"}
                 {data?.vacations.map((obj:IVacation) => (
                     <Grid key={obj.id} item xs={6}>
                         <Card>

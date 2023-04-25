@@ -5,15 +5,27 @@ import {IVacationsData} from '../../../shared/IVacationsData';
 import { IVacation } from '../../../shared/IVacation';
 import { IUser } from '../../../shared/IUser';
 
-const ITEMS_PER_PAGE: number = 3;
+const ITEMS_PER_PAGE: number = 4;
 
 export class VacationService{
-    async getVacations(user : IUser, page: number = 0): Promise<IVacationsData>{ // מחזיר מערך של אובייקטים בצורת וקאיישן
-        const results = await pool.promise().query(`SELECT *, (SELECT (true) FROM followers WHERE vacationID=vacations.id AND userID=${user.id!}) as 'isUserFollowing', (SELECT COUNT(*) FROM followers WHERE vacationID=vacations.id) as 'followers' FROM vacations ORDER BY startDate DESC LIMIT ${ITEMS_PER_PAGE} OFFSET ${page * ITEMS_PER_PAGE}`);
+    async getVacations(user : IUser, followedMode: boolean, page: number = 0): Promise<IVacationsData>{ // מחזיר מערך של אובייקטים בצורת וקאיישן
+        // result of: is user/s following a specific vacation + count users following specific vacation
+        let whereClause: string = "";
+        if (followedMode) {
+            whereClause = `WHERE EXISTS (SELECT 1 FROM followers WHERE vacationID=vacations.id AND userID=${user.id!})`;
+        }
+
+        const results = await pool.promise().query(`SELECT *, 
+            (SELECT (true) FROM followers WHERE vacationID=vacations.id AND userID=${user.id!}) as 'isUserFollowing', 
+            (SELECT COUNT(*) FROM followers WHERE vacationID=vacations.id) as 'followers' 
+            FROM vacations ${whereClause} 
+            ORDER BY startDate DESC LIMIT ${ITEMS_PER_PAGE} OFFSET ${page * ITEMS_PER_PAGE}`);
+
         const vacations = results[0] as IVacation[]; // מחזיר מערך של אובייקטים בצורת ווקאיישן כי זה מה שביקשנו שהפרומיס יחזיר
 
-        const countResult = await pool.promise().query("SELECT count(*) as 'totalCount' FROM vacations");
+        const countResult = await pool.promise().query(`SELECT count(*) as 'totalCount' FROM vacations ${whereClause}`);
         const totalCount = countResult[0][0].totalCount as number;
+
         return { vacations, totalCount };
     }
 

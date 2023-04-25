@@ -19,7 +19,8 @@ export class VacationController{
 
         try{
             const page = parseInt(req.query.page as string);
-            const vacations = await this.vacationService.getVacations(user, page);
+            const followedMode: boolean = (req.query.followedMode as string) === "true";
+            const vacations = await this.vacationService.getVacations(user, followedMode, page);
             res.status(200).send(vacations);
         }catch(err){
             res.status(500).send(err.message);
