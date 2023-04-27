@@ -93,8 +93,7 @@ const AddVacation = () => {
                 image,
                 startDate,
                 endDate,
-                price,
-                followers: 0
+                price
             }
             const response = await api.post('/vacations', newVacation);
             console.log(response);
