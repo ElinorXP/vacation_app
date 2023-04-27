@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button/Button';
+import { Delete, Edit, Favorite } from '@mui/icons-material';
 //import FavoriteIcon from '@mui/icons-material/Favorite';
 //import MoreVertIcon from '@mui/icons-material/MoreVert';
 
@@ -86,16 +87,27 @@ const Home = () => {
             onClick={() => {
                 onClick(vacation);
             }}
-            color={followState}>♥
+            color={followState}><Favorite/>
         </IconButton>}
-        <p>{followersCount} Followers</p>
+        <>{followersCount} Followers</>
         </>);
     }
 
     const FollowingFilter = () => {
-        return(<Button variant="outlined" onClick={() => {
+        return(<>{!user?.isAdmin && <Button variant="outlined" onClick={() => {
             setFollowedMode(!followedMode);
-        }}>{followedMode ? "Show All" : "Favorites"}</Button>);
+        }}>{followedMode ? "Show All" : "Favorites"}</Button>}</>);
+    }
+
+    const deleteVacation = async (id: number) => {
+        try{
+            const response = await api.delete(`/vacations/${id}`);
+            if (response.data.result === 'success') {
+                showVacations();
+            }
+        }catch(err){
+            console.log(err);
+        }
     }
 
     return(
@@ -116,16 +128,21 @@ const Home = () => {
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                 {data?.vacations.length === 0 && "No Followed Vacations"}
                 {data?.vacations.map((obj:IVacation) => (
-                    <Grid key={obj.id} item xs={6}>
+                    <Grid key={obj.id!} item xs={6}>
                         <Card>
                             <CardHeader
-                                action={
-                                <IconButton aria-label="settings">
-                                    ...
-                                </IconButton>
-                                }
                                 title={obj.location}
                                 subheader={obj.vacationDescription}
+                                action={
+                                    <CardActions disableSpacing={true}>
+                                        {user?.isAdmin && <IconButton aria-label="edit">
+                                            <Edit />
+                                        </IconButton >}
+                                        {user?.isAdmin && <IconButton onClick={() => {deleteVacation(obj.id!)}} aria-label="delete">
+                                            <Delete/>
+                                        </IconButton>}
+                                    </CardActions>
+                                }
                             />
                             <CardMedia
                                 component="img"

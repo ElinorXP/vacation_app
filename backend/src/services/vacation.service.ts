@@ -44,7 +44,9 @@ export class VacationService{
         return {...vacation, id};
     }
     
-    async deleteVacation(id: number): Promise<void>{ // פה רק מוחקים לפי איידי ואז לא מחזירים כלום
-        await pool.promise().query(`DELETE FROM vacations WHERE id = ?`, [id]);
+    async deleteVacation(id: number): Promise<boolean>{ // פה רק מוחקים לפי איידי ואז לא מחזירים כלום
+        await pool.promise().query(`DELETE FROM followers WHERE vacationID = ?`, [id]);
+        const results = await pool.promise().query(`DELETE FROM vacations WHERE id = ?`, [id]);
+        return results[0].affectedRows === 1;
     }
 }

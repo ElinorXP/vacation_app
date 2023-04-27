@@ -65,8 +65,8 @@ export class VacationController{
     async deleteVacation(req:Request, res:Response){
         try{
             const id = parseInt(req.params.id);
-            await this.vacationService.deleteVacation(id);
-            res.status(200).send();
+            const result : string = await this.vacationService.deleteVacation(id) ? "success" : "failure";
+            res.status(200).send({"result": result});
         }catch(err){
             res.status(500).send(err.message);
         }

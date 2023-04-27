@@ -30,6 +30,16 @@ class VacationAPI {
 
         return response;
     }
+
+    async delete<T = any, R = AxiosResponse<T>, D = any>(url: string, config?: AxiosRequestConfig<D>) {
+        const newHeaders = {...config?.headers, Authorization: `Bearer ${getTokenFromLocalStorage()}`}
+        const newConfig = {...config, headers: newHeaders};
+        console.log(`DELETE ${url}`);
+        const response = await this.api.delete(url, newConfig);
+        console.log("   -->", response.data);
+
+        return response;
+    }
 }
 
 export default VacationAPI;
