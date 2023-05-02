@@ -1,5 +1,6 @@
 import react, {useState, useEffect} from 'react';
 import axios, { AxiosResponse, AxiosError } from 'axios';
+import {Link} from 'react-router-dom';
 
 import TablePagination from '@mui/material/TablePagination';
 import Grid from '@mui/material/Grid';
@@ -10,8 +11,6 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button/Button';
 import { Delete, Edit, Favorite } from '@mui/icons-material';
-//import FavoriteIcon from '@mui/icons-material/Favorite';
-//import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import {getTokenFromLocalStorage, useAuthUser } from '../../utils/User';
 import {IVacation} from '../../../../shared/IVacation';
@@ -20,8 +19,6 @@ import {api} from '../apiUrl';
 import CardActions from '@mui/material/CardActions';
 import CardMedia from '@mui/material/CardMedia';
 import {IFollower} from '../../../../shared/IFollower'
-import {IFollowersData} from '../../../../shared/IFollowersData'
-import VacationAPI from '../../utils/api';
 
 
 const Home = () => {
@@ -135,9 +132,12 @@ const Home = () => {
                                 subheader={obj.vacationDescription}
                                 action={
                                     <CardActions disableSpacing={true}>
-                                        {user?.isAdmin && <IconButton aria-label="edit">
-                                            <Edit />
-                                        </IconButton >}
+                                        {user?.isAdmin &&
+                                        <Link to={`/add-vacation?id=${obj.id}`}>
+                                            <IconButton aria-label="edit">
+                                                <Edit />
+                                            </IconButton >
+                                        </Link>}
                                         {user?.isAdmin && <IconButton onClick={() => {deleteVacation(obj.id!)}} aria-label="delete">
                                             <Delete/>
                                         </IconButton>}

@@ -34,14 +34,14 @@ export class VacationService{
         return results[0][0] as Vacation | null;
     }
     
-    async createVacation(vacation: Vacation): Promise<Vacation>{
+    async createVacation(vacation: Vacation): Promise<boolean>{
         const results = await pool.promise().query(`INSERT INTO vacations SET ?`, [vacation]);
-        return {...vacation, id: results[0].insertId}; // insertId - פרופרטי של מה שהחזירה השאילתה פול.קוורי והוא מחזיר את האיידי  שמייסיקוול נתן לשורה האחרונה בטבלה חופשות, כלומר הפריימרי קי
+        return results[0].affectedRows === 1;
     }
     
-    async updateVacation(id: number, vacation: Vacation): Promise<Vacation>{ // לעדכן לפי איידי ולהחזיר אובייקט חדש ומעודכן בצורת וקאיישן
-        await pool.promise().query(`UPDATE vacations SET ? WHERE id = ?`, [vacation, id]);
-        return {...vacation, id};
+    async updateVacation(vacation: IVacation): Promise<boolean>{ // לעדכן לפי איידי ולהחזיר אובייקט חדש ומעודכן בצורת וקאיישן
+        const results = await pool.promise().query(`UPDATE vacations SET ? WHERE id = ?`, [vacation, vacation.id!]);
+        return results[0].affectedRows === 1;
     }
     
     async deleteVacation(id: number): Promise<boolean>{ // פה רק מוחקים לפי איידי ואז לא מחזירים כלום

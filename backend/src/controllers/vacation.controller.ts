@@ -2,6 +2,7 @@ import {Request, Response} from 'express';
 import {VacationService} from '../services/vacation.service';
 import {Vacation} from '../models/vacation.model';
 import { GetUserFromRequest } from '../utils/user';
+import { IVacation } from '../../../shared/IVacation';
 
 export class VacationController{
     private vacationService: VacationService;
@@ -44,8 +45,8 @@ export class VacationController{
     async createVacation(req: Request, res: Response){
         try{
             const vacationData:Vacation = req.body;
-            const newVacation = await this.vacationService.createVacation(vacationData);
-            res.status(200).send(newVacation);
+            const result : string = await this.vacationService.createVacation(vacationData) ? "success" : "failure";
+            res.status(200).send({"result": result});
         }catch(err){
             res.status(500).send(err.message);
         }
@@ -53,10 +54,9 @@ export class VacationController{
 
     async updateVacation(req:Request, res:Response){
         try{
-            const id = parseInt(req.body);
-            const vacationData:Vacation = req.body;
-            const updatedVacation = await this.vacationService.updateVacation(id, vacationData);
-            res.status(200).send(updatedVacation);
+            const vacationData:IVacation = req.body;
+            const result : string = await this.vacationService.updateVacation(vacationData) ? "success" : "failure";
+            res.status(200).send({"result": result});
         }catch(err){
             res.status(500).send(err.message);
         }

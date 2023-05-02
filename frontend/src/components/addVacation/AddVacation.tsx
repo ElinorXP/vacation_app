@@ -1,5 +1,8 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
+import {useLocation, useSearchParams} from 'react-router-dom';
 import {AxiosError} from 'axios';
+import { useNavigate } from "react-router-dom";
+
 import {IVacation} from '../../../../shared/IVacation';
 import { useAdminUser } from '../../utils/User';
 import {api} from '../apiUrl';
@@ -7,9 +10,28 @@ import { IVacationErrors } from '../../Interfaces/IVacationErrors';
 import ValidationError from '../../utils/ValidationError';
 
 const AddVacation = () => {
-    const [errorsObj, setErrorsObj] = useState<IVacationErrors>({hasErrors:false});
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const id = parseInt(searchParams.get("id") || "");
+    const [vacation, setVacation] = useState<IVacation>();
+
+    const getVacation = async () => {
+        const vacation = await api.get(`/vacations/${id}`);
+        setVacation(vacation.data);
+    }
+    // NOT GOOD HERE: getVacation();
+    // getVacation -> api.get -> setVacation (updating a state)
+    // ==> reload component -> AddVacation -> getVacation -> ...
+
+    useEffect(() => {
+        if(id){
+            getVacation();
+        }
+    }, []);
 
     const user = useAdminUser();
+
+    const [errorsObj, setErrorsObj] = useState<IVacationErrors>({hasErrors:false});
 
     const locationRef = useRef<HTMLInputElement>(null);
     const descriptionRef = useRef<HTMLInputElement>(null);
@@ -88,6 +110,7 @@ const AddVacation = () => {
             validate(location, vacationDescription, fileData, startDate, endDate, price);
 
             const newVacation:IVacation = {
+                id,
                 location,
                 vacationDescription,
                 image,
@@ -95,8 +118,20 @@ const AddVacation = () => {
                 endDate,
                 price
             }
-            const response = await api.post('/vacations', newVacation);
-            console.log(response);
+
+            let response;
+            if (id) {
+                response = await api.put('/vacations/', newVacation);
+            } else {
+                response = await api.post('/vacations', newVacation);
+            }
+
+            if (response.data.result !== "success") {
+                const _errors:IVacationErrors = {hasErrors:true, serverError: "Internal error"};
+                setErrorsObj(_errors);
+            } else {
+                navigate("/");
+            }
         }catch(err){
             if(err instanceof ValidationError){
                 const validationError:ValidationError = err;
@@ -115,15 +150,15 @@ const AddVacation = () => {
 
     return(
         <div className="add-vacation mx-auto border w-50">
-            <h1 className="text-center">Add Vacation</h1>
+            <h1 className="text-center">{id ? 'Edit Vacation' : 'Add Vacation'}</h1>
             <br/>
             <form action="#" className="text-center">
                 {errorsObj.serverError && <p style={{color:'red'}}>{errorsObj.serverError}</p>}
             
-                <input className="form-control" placeholder="Location" ref={locationRef}/>
+                <input className="form-control" placeholder="Location" defaultValue={id ? vacation?.location : ""} ref={locationRef}/>
                 {errorsObj.location && <p style={{color:'red'}}>{errorsObj.location}</p>}
 
-                <input className="form-control" placeholder="Description..." ref={descriptionRef}/>
+                <input className="form-control" placeholder={id ? `Current Description: ${vacation?.vacationDescription}` : 'Description'} ref={descriptionRef}/>
                 {errorsObj.description && <p style={{color:'red'}}>{errorsObj.description}</p>}
 
                 <label>Image</label><input type="file" className="form-control" ref={imageRef} onChange={handleFileChange}/>
@@ -135,10 +170,10 @@ const AddVacation = () => {
                 <label>End Date</label><input type="date" className="form-control" ref={endDateRef}/>
                 {errorsObj.endDate && <p style={{color:'red'}}>{errorsObj.endDate}</p>}
 
-                <input type="number" className="form-control" placeholder="Price" ref={priceRef}/>
+                <input type="number" className="form-control" defaultValue={id ? vacation?.price : ""} ref={priceRef}/>
                 {errorsObj.price && <p style={{color:'red'}}>{errorsObj.price}</p>}
                 <br/>
-                <button className="btn btn-primary" type="submit" onClick={handleSubmit}>Add a Vacation</button>
+                <button className="btn btn-primary" type="submit" onClick={handleSubmit}>{id ? 'Save Changes' : 'Add a New Vacation'}</button>
             </form>
         </div>
     );
