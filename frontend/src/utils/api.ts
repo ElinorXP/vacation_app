@@ -40,6 +40,17 @@ class VacationAPI {
 
         return response;
     }
+
+    async put<T = any, R = AxiosResponse<T>, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>) {
+        const newHeaders = {...config?.headers, Authorization: `Bearer ${getTokenFromLocalStorage()}`}
+        const newConfig = {...config, headers: newHeaders};
+        console.log(`PUT ${url}`);
+        console.log("   <--", data);
+        const response = await this.api.put(url, data, newConfig);
+        console.log("   -->", response.data);
+
+        return response;
+    }
 }
 
 export default VacationAPI;
