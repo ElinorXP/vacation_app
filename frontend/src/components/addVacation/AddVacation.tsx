@@ -1,15 +1,27 @@
 import React, {useState, useRef} from 'react';
 import {AxiosError} from 'axios';
 import {IVacation} from '../../../../shared/IVacation';
-import { useAdminUser } from '../../utils/User';
 import {api} from '../apiUrl';
 import { IVacationErrors } from '../../Interfaces/IVacationErrors';
 import ValidationError from '../../utils/ValidationError';
+import { useNavigate } from 'react-router-dom';
+import { IUser } from '../../../../shared/IUser';
 
-const AddVacation = () => {
+interface NavigationProps {
+    user?: IUser;
+}
+
+const AddVacation = (props: NavigationProps) => {
     const [errorsObj, setErrorsObj] = useState<IVacationErrors>({hasErrors:false});
 
-    const user = useAdminUser();
+    const navigate = useNavigate();
+    if (!props.user) {
+        navigate("/login");
+    }
+    const user = props.user!;
+    if (!user.isAdmin) {
+        navigate("/");
+    }
 
     const locationRef = useRef<HTMLInputElement>(null);
     const descriptionRef = useRef<HTMLInputElement>(null);

@@ -1,21 +1,38 @@
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { IRegisterErrors } from '../../Interfaces/RegisterErrors';
 import ValidationError from '../../utils/ValidationError';
 import { IUserCredentials } from '../../../../shared/IUser';
 import {api} from '../apiUrl';
-import { storeTokenInLocalStorage } from '../../utils/User';
+import { getTokenFromLocalStorage, storeTokenInLocalStorage } from '../../utils/User';
 import { userLogin } from '../../redux/authActions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import reducers from '../../redux/authSlice';
+import { RootState } from '../../redux/store';
 
 const Login = () => {
     const navigate = useNavigate();
     const [errorsObj, setErrorsObj] = useState<IRegisterErrors>({hasErrors: false});
     const dispatch = useDispatch<ThunkDispatch<ReturnType<typeof reducers>, any, AnyAction>>();
+    const user = useSelector((state: RootState) => state.auth.user)
+
+    async function dispatchLogin(): Promise<void> {
+        if (user)
+            return;
+            
+        const token : string = getTokenFromLocalStorage() || "";
+        if (token !== "") {
+            const userCredentials:IUserCredentials = {token: token};
+            await dispatch(userLogin(userCredentials));
+        }
+    }
+
+    useEffect(() => {
+        dispatchLogin();
+    }, []);
 
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);

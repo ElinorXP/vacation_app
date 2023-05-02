@@ -1,11 +1,11 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { userLogin } from './authActions';
 
-import { getTokenFromLocalStorage } from '../utils/User';
+import { getTokenFromLocalStorage, removeTokenInLocalStorage } from '../utils/User';
 
 const initialState = {
     userToken: getTokenFromLocalStorage(),
-    user: null,
+    user: undefined,
 }
 
 const authSlice = createSlice({
@@ -20,12 +20,12 @@ const authSlice = createSlice({
     // },
     builder.addCase(userLogin.fulfilled, (state, { payload }) => {
       //state.loading = false
-      console.log("token", payload.token);
       state.userToken = payload.token
       state.user = payload.user;
     });
     builder.addCase(userLogin.rejected, (state, action) => {
       state.userToken = null
+      removeTokenInLocalStorage();
     });
   },
 })

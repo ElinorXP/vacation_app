@@ -18,7 +18,7 @@ export const userLogin = createAsyncThunk<any, IUserCredentials>(
         }
         storeTokenInLocalStorage(response?.data?.token, response?.data?.userId);
 
-        return {token: response?.data?.token, userId: response?.data?.userId} as any;
+        return {token: response?.data?.token, user: response?.data?.user} as any;
     } catch (err) {
         if (err instanceof AxiosError && ((err.response?.status ?? 0) === 500)){
             const axiosErr = err as AxiosError;
