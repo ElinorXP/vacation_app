@@ -62,9 +62,15 @@ const AddVacation = () => {
     const handleSubmit:React.MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault();
 
+        let defaultImageUrl = "";
+        
+        if(id){
+            defaultImageUrl = vacation?.image as string;
+        }
+
         const location = locationRef.current?.value || "";
         const vacationDescription = descriptionRef.current?.value || "";
-        const image = fileData || "";
+        const image = fileData || defaultImageUrl;
         const startDate = startDateRef.current?.value || "";
         const endDate = endDateRef.current?.value || "";
         const price = Number(priceRef.current?.value) || 0;
@@ -79,7 +85,7 @@ const AddVacation = () => {
             _errors.description = "Enter valid description";
             _errors.hasErrors = true;
            }
-           if(fileData === ""){
+           if(!id && fileData === ""){
             _errors.image = "Enter valid image";
             _errors.hasErrors = true;
            }
@@ -119,7 +125,26 @@ const AddVacation = () => {
                 price
             }
 
+            if(id &&
+                vacation?.location === newVacation.location &&
+                vacation.vacationDescription === newVacation.vacationDescription &&
+                vacation.image === newVacation.image &&
+                vacation.startDate.split("T")[0] === newVacation.startDate &&
+                vacation.endDate.split("T")[0] === newVacation.endDate &&
+                vacation.price === newVacation.price){
+                console.log('no changes, data won\'t sent');
+
+                console.log(' = = = = = V A C A T I O N = = = = = =');
+                console.log(vacation);
+                console.log(' = = = = = N E W - V A C A T I O N = = = = = =');
+                console.log(newVacation);
+                console.log(' = = = = = E N D = = = = =');
+                navigate("/");
+                return;
+            }
+
             let response;
+
             if (id) {
                 response = await api.put('/vacations/', newVacation);
             } else {
@@ -149,28 +174,33 @@ const AddVacation = () => {
     }
 
     return(
-        <div className="add-vacation mx-auto border w-50">
+        <div className="add-vacation container mx-auto border col-lg-6 col-md-12 col-sm-12">
             <h1 className="text-center">{id ? 'Edit Vacation' : 'Add Vacation'}</h1>
             <br/>
             <form action="#" className="text-center">
                 {errorsObj.serverError && <p style={{color:'red'}}>{errorsObj.serverError}</p>}
-            
+
                 <input className="form-control" placeholder="Location" defaultValue={id ? vacation?.location : ""} ref={locationRef}/>
                 {errorsObj.location && <p style={{color:'red'}}>{errorsObj.location}</p>}
 
-                <input className="form-control" placeholder={id ? `Current Description: ${vacation?.vacationDescription}` : 'Description'} ref={descriptionRef}/>
+                <input className="form-control" placeholder="Description" defaultValue={id ? vacation?.vacationDescription : ""} ref={descriptionRef}/>
                 {errorsObj.description && <p style={{color:'red'}}>{errorsObj.description}</p>}
-
-                <label>Image</label><input type="file" className="form-control" ref={imageRef} onChange={handleFileChange}/>
+                
+                <label>Upload Image</label>
+                <div className='d-flex flex-column flex-md-row gap-2 align-items-center'>
+                    <input type="file" className="form-control" ref={imageRef} onChange={handleFileChange}/>
+                    {id ? <img src={vacation?.image} width={200}/> : ""}
+                </div>
                 {errorsObj.image && <p style={{color:'red'}}>{errorsObj.image}</p>}
 
-                <label>Start Date</label><input type="date" className="form-control" ref={startDateRef}/>
+                {/* ERROR to FIX: When updating existing date, it takes one day BEFORE the changed date! ai.com show the reasons*/}
+                <label>Start Date</label><input type="date" className="form-control" defaultValue={id ? vacation?.startDate.split("T")[0] : ""} ref={startDateRef}/>
                 {errorsObj.startDate && <p style={{color:'red'}}>{errorsObj.startDate}</p>}
 
-                <label>End Date</label><input type="date" className="form-control" ref={endDateRef}/>
+                <label>End Date</label><input type="date" className="form-control" defaultValue={id ? vacation?.endDate.split("T")[0] : ""} ref={endDateRef}/>
                 {errorsObj.endDate && <p style={{color:'red'}}>{errorsObj.endDate}</p>}
 
-                <input type="number" className="form-control" defaultValue={id ? vacation?.price : ""} ref={priceRef}/>
+                <input type="number" className="form-control" placeholder="Price" defaultValue={id ? vacation?.price : ""} ref={priceRef}/>
                 {errorsObj.price && <p style={{color:'red'}}>{errorsObj.price}</p>}
                 <br/>
                 <button className="btn btn-primary" type="submit" onClick={handleSubmit}>{id ? 'Save Changes' : 'Add a New Vacation'}</button>
