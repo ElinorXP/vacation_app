@@ -89,7 +89,7 @@ const Register = () => {
     }
 
     return(
-        <div className="register mx-auto border w-50">
+        <div className="register container mx-auto border col-lg-6 col-md-12 col-sm-12">
             <h1 className="text-center">Register</h1>
             <br/>
             <form action="#" className="text-center">

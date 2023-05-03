@@ -108,7 +108,7 @@ const Home = () => {
     }
 
     return(
-        <div className="add-vacation mx-auto border w-50 container">
+        <div className="home container mx-auto border col-lg-8 col-md-12 col-sm-12">
             <h1 className="text-center">Home</h1>
 
             <FollowingFilter />
@@ -125,7 +125,7 @@ const Home = () => {
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                 {data?.vacations.length === 0 && "No Followed Vacations"}
                 {data?.vacations.map((obj:IVacation) => (
-                    <Grid key={obj.id!} item xs={6}>
+                    <Grid key={obj.id!} item sm={12} md={6}>
                         <Card>
                             <CardHeader
                                 title={obj.location}
