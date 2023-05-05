@@ -4,6 +4,7 @@ import Register from './components/register/Register';
 import Navigation from './components/navigation/Navigation';
 import AddVacation from './components/addVacation/AddVacation';
 import Login from './components/login/Login';
+import Reports from './components/reports/Reports';
 import {Navigate, Route, Routes} from 'react-router-dom';
 import Home from './components/home/Home';
 import { useAuthUser } from './utils/User';
@@ -19,6 +20,7 @@ function App(){
         <Route path="/register" element={<Register/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/add-vacation" element={<AddVacation/>}/>
+        <Route path="/reports" element={<Reports/>}/>
         <Route path="*" element={<Home/>}/>
       </Routes>
     </div>

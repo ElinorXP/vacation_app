@@ -42,6 +42,15 @@ export class VacationController{
         }
     }
 
+    async getVacationsWithFollowers(req: Request, res: Response){
+        try{
+            const vacations = await this.vacationService.getVacationsWithFollowers();
+            res.status(200).send(vacations);
+        }catch(err){
+            res.status(500).send(err.message);
+        }
+    }
+
     async createVacation(req: Request, res: Response){
         try{
             const vacationData:Vacation = req.body;

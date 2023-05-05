@@ -14,6 +14,7 @@ const Navigation = (props: NavigationProps) => {
             <Link to="/register">Register</Link>
             {!props.user && <Link to="/login">Login</Link>}
             {props.user?.isAdmin && <Link to="/add-vacation">Add Vacation</Link>}
+            {props.user?.isAdmin && <Link to="/reports">Reports</Link>}
         </div>
     );
 }

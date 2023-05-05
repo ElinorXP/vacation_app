@@ -49,4 +49,9 @@ export class VacationService{
         const results = await pool.promise().query(`DELETE FROM vacations WHERE id = ?`, [id]);
         return results[0].affectedRows === 1;
     }
+
+    async getVacationsWithFollowers(): Promise<IVacation>{
+        const results = await pool.promise().query(`SELECT vacations.* FROM vacations INNER JOIN followers ON vacations.id = followers.vacationID`);
+        return results[0] as IVacation;
+    }
 }

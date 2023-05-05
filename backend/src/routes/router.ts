@@ -24,6 +24,7 @@ export class Router{
     // Vacation
     router.get('/vacations', vacationController.getVacations.bind(vacationController));
     router.get('/vacations/:id', vacationController.getVacationById.bind(vacationController));
+    router.get('/followed-vacations', vacationController.getVacationsWithFollowers.bind(vacationController));
     router.post('/vacations', vacationController.createVacation.bind(vacationController));
     router.put('/vacations', vacationController.updateVacation.bind(vacationController));
     router.delete('/vacations/:id', vacationController.deleteVacation.bind(vacationController));
