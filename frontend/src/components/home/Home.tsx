@@ -123,7 +123,7 @@ const Home = () => {
             />
 
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                {data?.vacations.length === 0 && "No Followed Vacations"}
+                {data?.vacations.length === 0 && "No Vacations"}
                 {data?.vacations.map((obj:IVacation) => (
                     <Grid key={obj.id!} item sm={12} md={6}>
                         <Card>

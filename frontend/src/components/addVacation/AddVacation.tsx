@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {useLocation, useSearchParams} from 'react-router-dom';
+import {useSearchParams} from 'react-router-dom';
 import {AxiosError} from 'axios';
 import { useNavigate } from "react-router-dom";
 
