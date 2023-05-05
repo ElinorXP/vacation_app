@@ -83,7 +83,7 @@ const Reports = () => {
         labels,
         datasets: [
           {
-            label: 'Vacation',
+            label: 'Followers',
             data: labels.map((location) => {
                 return followedVacations[location];
             }),
@@ -94,7 +94,7 @@ const Reports = () => {
 
     return(
         <div className="reports container mx-auto border col-lg-8 col-md-12 col-sm-12">
-            <Bar options={options} data={data} />
+            {apiData.length > 0 ? <Bar options={options} data={data} /> : <p>No Vacations</p>}
         </div>
     );
 }
