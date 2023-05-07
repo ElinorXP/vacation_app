@@ -93,6 +93,8 @@ const Home = () => {
     const FollowingFilter = () => {
         return(<>{!user?.isAdmin && <Button variant="outlined" onClick={() => {
             setFollowedMode(!followedMode);
+            setCurrentPage(0);
+
         }}>{followedMode ? "Show All" : "Favorites"}</Button>}</>);
     }
 
