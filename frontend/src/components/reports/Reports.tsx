@@ -12,15 +12,18 @@ import {
 
 import { IVacation } from '../../../../shared/IVacation';
 import { api } from '../apiUrl';
+import { useAdminUser } from '../../utils/User';
 
 const Reports = () => {
+
+    const user = useAdminUser();
 
     const [apiData, setApiData] = useState<IVacation[]>([]);
 
     const fetchData = async () => {
         try{
-            const followedVacations = await api.get('/followed-vacations');
-            setApiData(followedVacations.data);
+            const response = await api.get('/getAllVacations');
+            setApiData(response.data.vacations);
         }catch(err){
             console.log(err);
         }
@@ -32,28 +35,10 @@ const Reports = () => {
 
     let followedVacations:Record<string, number> = {};
 
-    apiData.map((vacation) => {
-        if(vacation.location in followedVacations){
-            followedVacations[vacation.location]++;
-        }else{
-            followedVacations[vacation.location] = 1;
-        }
+    apiData.filter((vacation) => vacation.followers! > 0)
+           .forEach((vacation) => {
+            followedVacations[vacation.location] = vacation.followers!;
     });
-
-    // Old way
-    //let locations:string[] = [];
-    // apiData.map((vacation) => {
-    //     if(locations.includes(vacation.location)){
-    //         followedVacations[vacation.location]++;
-    //     }else{
-    //         locations.push(vacation.location);
-    //         followedVacations[vacation.location] = 1;
-    //     }
-    // });
-
-    // console.log('= = = = = = = = = =');
-    // console.log(followedVacations);
-    // console.log('= = = = = = = = = =');
 
     ChartJS.register(
         CategoryScale,
@@ -78,15 +63,12 @@ const Reports = () => {
     };
 
     const labels = Object.keys(followedVacations);
-
     const data = {
         labels,
         datasets: [
           {
             label: 'Followers',
-            data: labels.map((location) => {
-                return followedVacations[location];
-            }),
+            data: followedVacations,
             backgroundColor: 'rgba(255, 99, 132, 0.5)',
           }
         ],

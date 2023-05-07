@@ -42,9 +42,9 @@ export class VacationController{
         }
     }
 
-    async getVacationsWithFollowers(req: Request, res: Response){
+    async getAllVacations(req: Request, res: Response){
         try{
-            const vacations = await this.vacationService.getVacationsWithFollowers();
+            const vacations = await this.vacationService.getAllVacations();
             res.status(200).send(vacations);
         }catch(err){
             res.status(500).send(err.message);
