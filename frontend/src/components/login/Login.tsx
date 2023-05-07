@@ -27,6 +27,7 @@ const Login = () => {
         if (token !== "") {
             const userCredentials:IUserCredentials = {token: token};
             await dispatch(userLogin(userCredentials));
+            navigate("/");
         }
     }
 

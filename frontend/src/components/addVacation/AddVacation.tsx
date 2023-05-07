@@ -4,25 +4,9 @@ import {IVacation} from '../../../../shared/IVacation';
 import {api} from '../apiUrl';
 import { IVacationErrors } from '../../Interfaces/IVacationErrors';
 import ValidationError from '../../utils/ValidationError';
-import { useNavigate } from 'react-router-dom';
-import { IUser } from '../../../../shared/IUser';
 
-interface NavigationProps {
-    user?: IUser;
-}
-
-const AddVacation = (props: NavigationProps) => {
+const AddVacation = () => {
     const [errorsObj, setErrorsObj] = useState<IVacationErrors>({hasErrors:false});
-
-    const navigate = useNavigate();
-    if (!props.user) {
-        navigate("/login");
-    }
-    const user = props.user!;
-    if (!user.isAdmin) {
-        navigate("/");
-    }
-
     const locationRef = useRef<HTMLInputElement>(null);
     const descriptionRef = useRef<HTMLInputElement>(null);
     const imageRef = useRef<HTMLInputElement>(null);
