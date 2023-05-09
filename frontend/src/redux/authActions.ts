@@ -16,7 +16,7 @@ export const userLogin = createAsyncThunk<any, IUserCredentials>(
         if (response?.data?.error) {
             return rejectWithValue(response?.data?.error);
         }
-        storeTokenInLocalStorage(response?.data?.token, response?.data?.userId);
+        storeTokenInLocalStorage(response?.data?.token);
 
         return {token: response?.data?.token, user: response?.data?.user} as any;
     } catch (err) {

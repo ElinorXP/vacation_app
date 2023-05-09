@@ -36,9 +36,8 @@ import {api} from '../components/apiUrl';
     // return userState;
   }
 
-  export function storeTokenInLocalStorage(token: string, userId: string) {
+  export function storeTokenInLocalStorage(token: string) {
     localStorage.setItem('token', token);
-    localStorage.setItem('userId', userId)
   }
 
   export function getTokenFromLocalStorage() {
@@ -46,13 +45,7 @@ import {api} from '../components/apiUrl';
   }
 
   export function removeTokenInLocalStorage() {
-    console.log("removeTokenInLocalStorage");
     localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-  }
-
-  function getUserIdFromLocalStorage() {
-    return localStorage.getItem('userId');
   }
   
   async function getAuthenticatedUser() : Promise<IUser | null> {

@@ -11,23 +11,26 @@ const initialState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.userToken = null;
+      state.user = undefined;
+      removeTokenInLocalStorage();
+      return state;
+    }
+  },
   extraReducers: (builder) => {
-    // login user
-    // ["userLogin.pending"]: (state) => {
-    //   //state.user.loading = true
-    //   //state.error = null
-    // },
     builder.addCase(userLogin.fulfilled, (state, { payload }) => {
-      //state.loading = false
-      state.userToken = payload.token
+      state.userToken = payload.token;
       state.user = payload.user;
     });
     builder.addCase(userLogin.rejected, (state, action) => {
-      state.userToken = null
+      state.userToken = null;
+      state.user = undefined;
       removeTokenInLocalStorage();
     });
   },
 })
 
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;
