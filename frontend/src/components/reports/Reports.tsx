@@ -12,12 +12,8 @@ import {
 
 import { IVacation } from '../../../../shared/IVacation';
 import { api } from '../apiUrl';
-import { useAdminUser } from '../../utils/User';
 
 const Reports = () => {
-
-    const user = useAdminUser();
-
     const [apiData, setApiData] = useState<IVacation[]>([]);
 
     const fetchData = async () => {

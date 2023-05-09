@@ -56,8 +56,8 @@ export class UserController{
   async loginUser(req: Request, res: Response){
     try{
       const userCredentials:IUserCredentials = req.body;
-      const {token, userId} = await this.userService.loginUser(userCredentials);
-      res.status(201).send({token, userId});
+      const {token, user} = await this.userService.loginUser(userCredentials);
+      res.status(201).send({token, user});
     }catch(err){
       res.status(500).send({error: err.message});
     }

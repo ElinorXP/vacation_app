@@ -63,29 +63,43 @@ export class UserService{
     };
   }
 
-  async loginUser(userCredentials: IUserCredentials): Promise<{token: string, userId?: number}> {
+  async loginUser(userCredentials: IUserCredentials): Promise<{token: string, user?: IUser}> {
     // // @ts-ignore
     const jwt = require('jsonwebtoken');
+    let modelUser:User;
+    let token;
 
-    const modelUser:User = await this.getUserByUsername(userCredentials.userName);
+    if (userCredentials.token) {
+      token = userCredentials.token;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      modelUser = await this.getUserByUsername(decoded.userName);
+    } else {
+      modelUser = await this.getUserByUsername(userCredentials.userName);
+      if (modelUser === null) {
+        throw Error("Invalid Credentials");
+      }
 
-    if (modelUser === null) {
-      throw Error("Invalid Credentials");
+      if (modelUser.userPassword !== userCredentials.password) {
+        throw Error("Invalid Credentials");
+      }
+
+      token = jwt.sign({
+          id: modelUser.id,
+          userName:  modelUser.userName
+        },
+        process.env.JWT_SECRET,
+        {expiresIn: process.env.JWT_EXPIRES_IN}
+      );
     }
 
-    if (modelUser.userPassword !== userCredentials.password) {
-      throw Error("Invalid Credentials");
+    const user:IUser = {
+      id: modelUser.id,
+      firstName: modelUser.firstName,
+      lastName: modelUser.lastName,
+      isAdmin: modelUser.userName === "admin",
     }
 
-    const token = jwt.sign({
-        id: modelUser.id,
-        userName:  modelUser.userName
-      },
-      process.env.JWT_SECRET,
-      {expiresIn: process.env.JWT_EXPIRES_IN}
-    );
-
-    return {token, userId: modelUser.id};
+    return {token, user};
   }
 
   async updateUser(id: number, user: User): Promise<User> {

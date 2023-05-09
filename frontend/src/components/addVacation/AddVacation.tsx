@@ -4,7 +4,6 @@ import {AxiosError} from 'axios';
 import { useNavigate } from "react-router-dom";
 
 import {IVacation} from '../../../../shared/IVacation';
-import { useAdminUser } from '../../utils/User';
 import {api} from '../apiUrl';
 import { IVacationErrors } from '../../Interfaces/IVacationErrors';
 import ValidationError from '../../utils/ValidationError';
@@ -29,10 +28,7 @@ const AddVacation = () => {
         }
     }, []);
 
-    const user = useAdminUser();
-
     const [errorsObj, setErrorsObj] = useState<IVacationErrors>({hasErrors:false});
-
     const locationRef = useRef<HTMLInputElement>(null);
     const descriptionRef = useRef<HTMLInputElement>(null);
     const imageRef = useRef<HTMLInputElement>(null);
