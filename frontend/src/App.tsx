@@ -42,7 +42,6 @@ function App(){
         <Route path="/register" element={<Register/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/add-vacation" element={<AdminRoute><AddVacation/></AdminRoute>}/>
-        <Route path="/logout" element={<UserRoute><Logout/></UserRoute>}/>
       </Routes>
     </div>
   );
