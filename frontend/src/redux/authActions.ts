@@ -1,12 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import {api} from '../components/apiUrl';
 import { IUserCredentials } from "../../../shared/IUser";
-import ValidationError from "../utils/ValidationError";
 import { IRegisterErrors } from "../Interfaces/RegisterErrors";
 import { AxiosError } from "axios";
 import { storeTokenInLocalStorage } from "../utils/User";
 
-const backendURL = 'http://127.0.0.1:5000'
 export const userLogin = createAsyncThunk<any, IUserCredentials>(
   'auth/login',
   async (userCredentials: IUserCredentials, { rejectWithValue }) => {

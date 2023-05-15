@@ -41,7 +41,6 @@ export class UserService{
   }
 
   async createUser(user: IUser): Promise<IUser> {
-    // // @ts-ignore
     const userModel: User = {
       firstName: user.firstName,
       lastName: user.lastName,
@@ -64,7 +63,6 @@ export class UserService{
   }
 
   async loginUser(userCredentials: IUserCredentials): Promise<{token: string, user?: IUser}> {
-    // // @ts-ignore
     const jwt = require('jsonwebtoken');
     let modelUser:User;
     let token;

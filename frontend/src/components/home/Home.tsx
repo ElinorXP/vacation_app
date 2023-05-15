@@ -52,7 +52,6 @@ const Home = () => {
         enum eState {
             FOLLOWING = 'error',
             NOT_FOLLOWING = 'info',
-            // error/info = colors of mui
         }
         const [followState, setFollowState] = useState<eState>(vacation.isUserFollowing! ? eState.FOLLOWING : eState.NOT_FOLLOWING);
         const [followersCount, setFollowersCount] = useState<number>(vacation.followers!);

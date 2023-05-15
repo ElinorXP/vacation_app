@@ -47,7 +47,7 @@ export class UserController{
     try{
       const userData: IUser = req.body;
       const newUser = await this.userService.createUser(userData);
-      res.status(201).send(newUser);
+      res.status(200).send(newUser);
     }catch(err){
       res.status(500).send(err.message);
     }
@@ -57,7 +57,7 @@ export class UserController{
     try{
       const userCredentials:IUserCredentials = req.body;
       const {token, user} = await this.userService.loginUser(userCredentials);
-      res.status(201).send({token, user});
+      res.status(200).send({token, user});
     }catch(err){
       res.status(500).send({error: err.message});
     }

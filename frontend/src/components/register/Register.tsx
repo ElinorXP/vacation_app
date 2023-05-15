@@ -74,11 +74,6 @@ const Register = () => {
                 const validationError:ValidationError = err;
                 setErrorsObj(validationError.getErrors() as IRegisterErrors);
             }else if(err instanceof AxiosError && ((err.response?.status ?? 0) === 500)){
-                /*
-                ((err.response?.status ?? 0) === 500)
-                SAME AS
-                ((err.response?.status !== undefined && err.response?.status) || 0) === 500
-                */
                 const axiosErr = err as AxiosError;
                 const _errors: IRegisterErrors = {hasErrors: false, serverError: axiosErr.response?.data as string || ""};
                 setErrorsObj(_errors);

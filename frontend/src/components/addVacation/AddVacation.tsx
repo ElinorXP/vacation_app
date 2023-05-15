@@ -18,9 +18,6 @@ const AddVacation = () => {
         const vacation = await api.get(`/vacations/${id}`);
         setVacation(vacation.data);
     }
-    // NOT GOOD HERE: getVacation();
-    // getVacation -> api.get -> setVacation (updating a state)
-    // ==> reload component -> AddVacation -> getVacation -> ...
 
     useEffect(() => {
         if(id){
@@ -39,14 +36,6 @@ const AddVacation = () => {
     const [fileData, setFileData] = useState<string>("");
 
     const handleFileChange = async (event:React.ChangeEvent<HTMLInputElement>) => {
-        // if(event.target.files && event.target.files.length > 0) {
-        //     setFile(event.target.files[0]);
-        // }
-
-        /*
-        const a = true ? 1 : 0
-        mor?.prop
-        */
         const file = event.target.files?.[0];
         const reader = new FileReader();
         reader.readAsDataURL(file as Blob);
@@ -104,11 +93,6 @@ const AddVacation = () => {
         }
 
         try{
-            // Old validation
-            // if(!location || !vacationDescription || !fileData || !startDate || !endDate || !price){
-            //     return;
-            // }
-
             validate(location, vacationDescription, fileData, startDate, endDate, price);
 
             const newVacation:IVacation = {

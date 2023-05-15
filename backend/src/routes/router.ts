@@ -6,7 +6,7 @@ import { FollowerController } from '../controllers/follower.controller';
 import {User} from '../models/user.model';
 
 export class Router{
-  static getRouter(): ExpressRouter{ // static - משהו ששייך לכל מופע שנוצר מהקלאס
+  static getRouter(): ExpressRouter{
     const router = ExpressRouter();
     const userController = new UserController();
     const vacationController = new VacationController();

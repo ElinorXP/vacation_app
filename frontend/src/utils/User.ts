@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -19,21 +19,6 @@ import {api} from '../components/apiUrl';
 
     return user ? user : undefined;
 
-    
-    //   async function getUserDetails() {
-    //     const user = await getAuthenticatedUser();
-    //     setUser(user || undefined);
-    //     if (!user) {
-    //       if (!disableNavigate) {
-    //         navigate("/login");
-    //       }
-    //       return userState;
-    //     }
-    //   }
-    //   getUserDetails();
-    // }, []);
-
-    // return userState;
   }
 
   export function storeTokenInLocalStorage(token: string) {
@@ -47,25 +32,4 @@ import {api} from '../components/apiUrl';
   export function removeTokenInLocalStorage() {
     localStorage.removeItem('token');
   }
-  
-  async function getAuthenticatedUser() : Promise<IUser | null> {
-    const token = getTokenFromLocalStorage();
-    if (token === "")
-      return null;
 
-    try {
-      const response = await api.get("/token");
-
-      if (!response.data.id) {
-        removeTokenInLocalStorage();
-        return null;
-      };
-
-      return response.data;
-    }
-    catch (err) {
-      console.log('Error in getAuthenticatedUser', err);
-      removeTokenInLocalStorage();
-      return null;
-    }
-  }
